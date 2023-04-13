@@ -1,0 +1,1 @@
+{"version":3,"file":"ddbClient.js","sourceRoot":"","sources":["../../../../aws/dynamodb/libs/ddbClient.ts"],"names":[],"mappings":";;;AAAA,8DAAyD;AAEzD,MAAM,MAAM,GAAG,OAAO,CAAC,GAAG,CAAC,MAAM,IAAI,WAAW,CAAA;AAChD,MAAM,QAAQ,GAAG,OAAO,CAAC,GAAG,CAAC,eAAe,IAAI,uBAAuB,CAAA;AAE1D,QAAA,SAAS,GAAG,IAAI,gCAAc,CAAC;IACxC,MAAM,EAAE,MAAM;IACd,QAAQ,EAAE,QAAQ;CACrB,CAAC,CAAA"}
