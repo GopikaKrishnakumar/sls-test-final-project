@@ -1,10 +1,10 @@
 import { UpdateCommandInput, UpdateCommandOutput } from '@aws-sdk/lib-dynamodb'
 import { returnData } from '../../utils/returnData'
-import { updateItem } from '../../aws/dynamodb/users/updateItem'
-import { DynamoUserIF } from '../../types/users-if'
+import { updateItem } from '../../aws/dynamodb/post/updateItem'
+import { DynamoPostIF } from '../../types/post-if'
 
-export const updateUser = async (
-  user: DynamoUserIF,
+export const updatePost = async (
+  post: DynamoPostIF,
 ): Promise<
   | {
       statusCode: number
@@ -13,28 +13,28 @@ export const updateUser = async (
   | UpdateCommandOutput
   | undefined
 > => {
-  const TABLE_NAME_USERS = process.env.TABLE_NAME_USERS
-  if (!TABLE_NAME_USERS) {
-    console.log('No TABLE_NAME_USERS')
+  const TABLE_NAME_POST = process.env.TABLE_NAME_POST
+  if (!TABLE_NAME_POST) {
+    console.log('No TABLE_NAME_POST')
     return
   }
-  if (!user.userId || !user.firstName) {
-    return returnData(400, 'No user ID or first name!')
+  if (!post.userId || !post.createdOn) {
+    return returnData(400, 'No user ID or date created!')
   }
 
   let updateExpression = 'set'
   let ExpressionAttributeNames = {}
   let ExpressionAttributeValues = {}
-  for (const property in user) {
+  for (const property in post) {
     updateExpression += ` #${property} = :${property} ,`
     ExpressionAttributeNames['#' + property] = property
-    ExpressionAttributeValues[':' + property] = user[property]
+    ExpressionAttributeValues[':' + property] = post[property]
   }
 
   const params: UpdateCommandInput = {
-    TableName: TABLE_NAME_USERS,
+    TableName: TABLE_NAME_POST,
     Key: {
-      userId: user.userId,
+      userId: post.userId,
     },
     UpdateExpression: updateExpression,
     ExpressionAttributeNames: ExpressionAttributeNames,

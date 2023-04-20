@@ -1,0 +1,40 @@
+import { APIGatewayEvent } from 'aws-lambda'
+import { returnData } from '../../utils/returnData'
+import { CreatePostInputIF, DynamoPostIF } from '../../types/post-if'
+import { ValidationError } from 'yup'
+import { batchWrite } from '../../aws/dynamodb/post/batchWriteitem'
+import { v4 as uuidv4 } from 'uuid'
+import { AttributeValue } from '@aws-sdk/client-dynamodb'
+
+export const handler = async (event: APIGatewayEvent) => {
+  if (!event.body) {
+    return returnData(400, 'No body!')
+  }
+  const post: CreatePostInputIF[] = JSON.parse(event.body)
+  if (!post.length) {
+    return returnData(400, 'No date!')
+  }
+  const response = await writepostBatch(post)
+  return returnData(200, JSON.stringify(response))
+}
+
+export const writepostBatch = async (post: CreatePostInputIF[]) => {
+  try {
+    const parsedpost: DynamoPostIF[] = post.map((user) => {
+      return {
+        avatarUrl: { S: user.avatarUrl as string },
+        isActive: { N: 1 },
+        userId: { S: uuidv4() },
+      }
+    })
+    return await batchWrite(
+      parsedpost as Record<string, AttributeValue>[],
+      process.env.TABLE_NAME_post as string,
+    )
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      return error.message
+    }
+    return `Something goes wrong: ${JSON.stringify(error)}`
+  }
+}

@@ -27,5 +27,3 @@ export const userCreateSchema: Yup.ObjectSchema<CreateUserInputIF> = Yup.object(
         .min(MIN_NAME_LETTERS, `Username must be at least ${MIN_NAME_LETTERS} letters`)
         .max(MAX_NAME_LETTERS, `Username must not exceed ${MAX_NAME_LETTERS} letters`)
 })
-
-

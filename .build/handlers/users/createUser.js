@@ -4,15 +4,15 @@ exports.handler = void 0;
 const putItem_1 = require("../../aws/dynamodb/putItem");
 const uuid_1 = require("uuid");
 const returnData_1 = require("../../utils/returnData");
-const yup_1 = require("yup");
 const usersvalidation_1 = require("./validation/usersvalidation");
+const yup_1 = require("yup");
 const handler = async (event) => {
     if (!event.body) {
         return (0, returnData_1.returnData)(400, "No body!");
     }
-    const body = JSON.parse(event.body);
+    const user = JSON.parse(event.body);
     try {
-        await usersvalidation_1.userCreateSchema.validate(body);
+        await usersvalidation_1.userCreateSchema.validate(user);
     }
     catch (error) {
         if (error instanceof yup_1.ValidationError) {
@@ -25,15 +25,15 @@ const handler = async (event) => {
         TableName: process.env.TABLE_NAME_USERS,
         Item: {
             userId: uuid,
-            firstName: body.firstName,
+            firstName: user.firstName,
             isActive: 1,
-            lastName: body.lastName,
-            email: body.email,
-            userName: body.userName,
+            lastName: user.lastName,
+            email: user.email,
+            userName: user.userName,
         }
     };
-    if (body.avatarUrl) {
-        params.Item.avatarUrl = body.avatarUrl;
+    if (user.avatarUrl) {
+        params.Item.avatarUrl = user.avatarUrl;
     }
     const result = await (0, putItem_1.putItem)(params);
     if (result.success) {
